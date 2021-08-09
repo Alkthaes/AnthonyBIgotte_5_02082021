@@ -23,6 +23,7 @@ function createItems(array) {
         let itemImage = document.createElement('img');
         itemImage.src = element.imageUrl;
         itemImage.height = 225;
+        //création de la div card
         itemImage.classList.add('card-img-top', 'w-100');
         let itemName = document.createElement('h3');
         itemName.textContent = element.name;
@@ -33,6 +34,7 @@ function createItems(array) {
         let itemDescription = document.createElement('p');
         itemDescription.textContent = element.description;
         itemDescription.classList.add('card-text');
+        //ajout du bouton panier et du lien vers la page produit
         let linkButtonCtn = document.createElement('div');
         linkButtonCtn.classList.add('d-flex', 'justify-content-between', 'align-items-center')
         let addCartBtn = document.createElement('div');
@@ -87,7 +89,8 @@ function idChecker(target, array) {
         }
     })
 }
-
+//On cible ici la div principale pour écouter l'event
+//et on exécute deux codes différents pour le bouton ajout au panier et le lien vers la page produit
 itemsContainer.addEventListener('click', function (e) {
     e.preventDefault();
     if (e.target && e.target.matches('a.linkToProduct')) {
