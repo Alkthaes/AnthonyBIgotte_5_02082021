@@ -37,9 +37,9 @@ function createItems(array) {
         //ajout du bouton panier et du lien vers la page produit
         let linkButtonCtn = document.createElement('div');
         linkButtonCtn.classList.add('d-flex', 'justify-content-between', 'align-items-center')
-        let addCartBtn = document.createElement('div');
+        let addCartBtn = document.createElement('button');
         addCartBtn.classList.add('btn', 'btn-warning', 'float-right', 'btnAddCart');
-        addCartBtn.textContent = 'Ajouter au panier'
+        addCartBtn.textContent = 'Ajouter au panier';
         let productLink = document.createElement('a');
         productLink.classList.add('text-muted', 'linkToProduct');
         productLink.href = '../product/produit.html';
@@ -99,7 +99,7 @@ itemsContainer.addEventListener('click', function (e) {
         console.log((e.target).parentElement.parentElement.parentElement.id);
         idChecker(e.target, listItems);
     }
-    else if (e.target && e.target.matches('div.btnAddCart')) {
+    else if (e.target && e.target.matches('button.btnAddCart')) {
         console.log('ça marche aussi !');
         console.log(e.target);
         console.log((e.target).parentElement.parentElement.parentElement.id);
