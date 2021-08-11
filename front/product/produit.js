@@ -1,14 +1,11 @@
 /**Gére les intéractions avec la page produit */
 
 
-
-
 let idOfPage = localStorage.getItem('pageId');
 //on enregistre l'objet obtenu par le fetch dans une variable
-let article = {};
+const article = {};
 //div dans laquelle on va placer les éléments créés ici
 const articleContainer = document.getElementById('article-content');
-
 
 function createPage(object) {
     //on change le titre de la page avec le nom du produit
@@ -47,27 +44,26 @@ function createPage(object) {
     let optionsTitle = document.createElement('h2');
     optionsTitle.classList.add('mb-5');
     optionsTitle.innerText = 'Couleur(s) disponible(s)';
-    let optionsChoices = document.createElement('div');
+    let optionsChoicesLabel = document.createElement('label');
+    optionsChoicesLabel.for = 'optionsSelect';
+    optionsChoicesLabel.innerText = 'couleurs';
+    optionsChoicesLabel.classList.add('sr-only');
+    divOptions.appendChild(optionsChoicesLabel);
+    let optionsChoices = document.createElement('select');
+    optionsChoices.id = 'optionsSelect';
     //le nombre de couleurs disponibles n'étant le même pour chaque article
     //on crée ici une fonction pour créer le nombre de bouton radio en fonction des couleurs disponibles
     (object.colors).forEach((color) => {
-        let wrapper = document.createElement('div');//uniquement pour la mise en page
-        let colorOption = document.createElement('input');
-        colorOption.type = 'radio';
-        colorOption.name = 'color-choice';
-        let colorOptionLabel = document.createElement('label');
-        colorOptionLabel.classList.add('ml-3');
-        colorOptionLabel.for = 'color-choice'
-        colorOptionLabel.innerHTML = color;
-        wrapper.appendChild(colorOption);
-        wrapper.appendChild(colorOptionLabel);
-        optionsChoices.appendChild(wrapper);
+        let colorOption = document.createElement('option');
+        colorOption.innerHTML = color;
+        optionsChoices.appendChild(colorOption);
     });
     divOptions.appendChild(optionsTitle);
     divOptions.appendChild(optionsChoices);
     descOptionsCtn.appendChild(divOptions);
     let cartBtn = document.createElement('button');
     cartBtn.classList.add('btn', 'btn-warning', 'float-right', 'btnAddCart', 'align-self-center');
+    cartBtn.id = 'prodPgAddCart';
     cartBtn.textContent = 'Ajouter au panier';
     articleContainer.appendChild(cartBtn);
 }
@@ -81,14 +77,16 @@ fetch(`http://localhost:3000/api/teddies/${idOfPage}`)
         }
     })
     .then(function (data) {
-        createPage(data);
-        //console.log(article);
+        Object.assign(article, data);
+    })
+    .then(function () {
+        createPage(article);
     })
     .catch(function (err) {
         console.log(err);
     });
 ;
 
-
+//createPage(article);
 
 

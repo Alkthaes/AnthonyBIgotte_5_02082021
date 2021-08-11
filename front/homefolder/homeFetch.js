@@ -80,32 +80,4 @@ fetch('http://localhost:3000/api/teddies')
     });
 ;
 
-//On test si l'id de la carte produit = l'id d'un objet de l'api teddies
-function idChecker(target, array) {
-    array.forEach((element) => {
-        if (((target).parentElement.parentElement.parentElement.id) == element._id && target.matches('a.linkToProduct')) {
-            localStorage.pageId = (target).parentElement.parentElement.parentElement.id;
-            location.href = '../product/produit.html';
-        }
-    })
-}
-//On cible ici la div principale pour écouter l'event
-//et on exécute deux codes différents pour le bouton ajout au panier et le lien vers la page produit
-itemsContainer.addEventListener('click', function (e) {
-    e.preventDefault();
-    if (e.target && e.target.matches('a.linkToProduct')) {
-        console.log('ça marche !');
-        console.log(e.target);
-        console.log((e.target).parentElement.parentElement.parentElement.id);
-        idChecker(e.target, listItems);
-    }
-    else if (e.target && e.target.matches('button.btnAddCart')) {
-        console.log('ça marche aussi !');
-        console.log(e.target);
-        console.log((e.target).parentElement.parentElement.parentElement.id);
-        idChecker(e.target, listItems);
-
-    }
-});
-
 
