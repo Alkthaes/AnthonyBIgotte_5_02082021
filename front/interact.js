@@ -3,8 +3,12 @@ et l'accés aux pages produit*/
 
 //stockage des produits ajoutés au panier dans le localStorage
 let itemsInCart = [];
-
-
+//conserver les articles dans le panier même en naviguant entre les pages porduits et la page d'accueil
+if ((JSON.parse(localStorage.getItem('itemsInCart'))) != null) {
+    (JSON.parse(localStorage.getItem('itemsInCart'))).forEach((element) => {
+        itemsInCart.push(element);
+    })
+}
 
 /*fonction d'ajout au panier*/
 function addItemCart(object) {
@@ -24,8 +28,6 @@ function idChecker(target, array) {
     })
 }
 
-
-
 //On cible ici la div principale pour écouter l'event
 //et on exécute deux codes différents pour le bouton ajout au panier et le lien vers la page produit
 try {
@@ -37,6 +39,7 @@ try {
         else if (e.target && e.target.matches('button.btnAddCart')) {
             idChecker(e.target, listItems);
             localStorage.setItem('itemsInCart', JSON.stringify(itemsInCart));
+            location.href = '../cart.html';
         }
     })
 } catch (error) {
@@ -49,6 +52,7 @@ try {
         if (e.target && e.target.matches('button#prodPgAddCart')) {
             itemsInCart.push(article);
             localStorage.setItem('itemsInCart', JSON.stringify(itemsInCart));
+            location.href = '../cart.html';
         }
     })
 } catch (error) {

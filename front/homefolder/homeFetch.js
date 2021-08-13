@@ -2,7 +2,6 @@
  * Gère les intéractions JS sur la page principale
  */
 
-
 const itemsContainer = document.getElementById('listItems');
 //on va stocker le résultat de la requête dans listItems
 const listItems = [];

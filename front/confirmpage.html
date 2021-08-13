@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <title>Orinoco - Mon panier</title>
+    <title>Orinoco - Confirmation commande</title>
 </head>
 
 <body>
@@ -16,59 +16,32 @@
         <div class="container">
             <div class="row">
                 <div class="col d-flex align-items-center justify-content-between">
-                    <a href="./homefolder/index.html" class="py-3">
+                    <a href="../homefolder/index.html" class="py-3">
                         <img src="./homefolder/chrome_2021-08-04_14-56-33.png" alt="logo du site Orinoco">
+                    </a>
+                    <a href="../cart.html" class="btn btn-warning btn-lg float-right">
+                        <p class="d-inline align-baseline">Mon Panier
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-cart" viewBox="0 0 16 16">
+                                <path
+                                    d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                            </svg>
+                        </p>
                     </a>
                 </div>
             </div>
         </div>
     </div>
     <!--Header end-->
-    <!--Main start-->
-    <main class="container">
-        <h1 class="text-center">Mon panier</h1>
-        <div class="row">
-            <div class="col" id="main-content">
 
-            </div>
+    <!--Main content start-->
+    <main class="container bg-light pb-5">
+        <div class="jumbotron">
+            <h1>Merci pour votre commande !</h1>
         </div>
-        <div class="row">
-            <div class="col d-flex flex-column align-items-center justify-content-center">
-                <a href="../front/homefolder/index.html" class="btn btn-warning mb-3">Continuer les achats</a>
-                <p>OU</p>
-                <p class="h2">Passer commande</p>
-            </div>
-        </div>
-        <form action="#" class="my-5" id="order-form">
-            <div class="form-row">
-                <div class="form-group col-6">
-                    <label for="customerLastName">Nom :</label>
-                    <input type="text" class="form-control" id="customerLastName" required
-                        pattern="[A-Za-z\W]*-*[A-Za-z\W]*">
-                </div>
-                <div class="form-group col-6">
-                    <label for="customerFirstName">Prénom :</label>
-                    <input type="text" class="form-control" id="customerFirstName" required
-                        pattern="[A-Za-z\W]*-*[A-Za-z\W]*">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="customerAddress">Adresse :</label>
-                <input type="text" class="form-control" id="customerAddress" required pattern="[0-9]+,*\s*[A-Za-z\W]*">
-            </div>
-            <div class="form-group">
-                <label for="customerCity">Ville :</label>
-                <input type="text" class="form-control" id="customerCity" required pattern="[A-Za-z\W]*-*[A-Za-z\W]*">
-            </div>
-            <div class="form-group">
-                <label for="customerEmail">Email :</label>
-                <input type="email" class="form-control" id="customerEmail" required
-                    pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$">
-            </div>
-            <button type="submit" class="btn btn-warning" id="order-button">Commander</button>
-        </form>
     </main>
-    <!--Main End-->
+    <!--Main content end-->
+
     <!--Footer start-->
     <footer class="bg-dark text-light">
         <!--Section social media-->
@@ -190,7 +163,7 @@
 
 
     <!--Les scripts vont ci-dessous-->
-    <script src="cart.js"></script>
+    <script src="confirmpage.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
@@ -198,3 +171,5 @@
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
 </body>
+
+</html>

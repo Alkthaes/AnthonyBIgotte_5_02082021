@@ -4,6 +4,7 @@ let retrievedCartList = JSON.parse(localStorage.getItem('itemsInCart'));
 console.log(retrievedCartList);
 const mainContent = document.getElementById('main-content');
 let totalPrice = 0;
+let numberArticle = 1;
 
 //affichange de la liste des articles dans le panier
 retrievedCartList.forEach((element) => {
@@ -18,7 +19,7 @@ retrievedCartList.forEach((element) => {
         </div>
         <div class="col-3">
             <button id="remove-item" class=" mr-3 btn btn-warning py-2 px-3">-</button>
-            <span id="number-item">1</span>
+            <span id="number-item">${numberArticle}</span>
             <button id="add-item" class=" ml-3 btn btn-warning py-2 px-3">+</button>
         </div>
         <div class="col-3">
@@ -28,7 +29,69 @@ retrievedCartList.forEach((element) => {
         ;
     totalPrice += ((element.price / 100));
     mainContent.appendChild(cartItem);
+
+
+    const divTotal = document.createElement('div');
+    divTotal.classList.add('mt-3');
+    divTotal.innerHTML = `<p class="font-weight-bold">Total : <span id="total-price">${totalPrice}€</span></p>`;
+    mainContent.appendChild(divTotal);
+});
+
+//ajout et suprresion d'articles dans le panier
+mainContent.addEventListener('click', function (e) {
+    if (e.target && e.target.matches('button#remove-item')) {
+
+    }
 })
-const divTotal = document.createElement('div');
-divTotal.innerHTML = `<p>Total : <span id="total-price">${totalPrice}€</span></p>`;
-mainContent.appendChild(divTotal);
+
+//passer la commande
+//extraire les id produits
+const productsId = [];
+retrievedCartList.forEach((element) => {
+    productsId.push(element._id);
+})
+//extraire les données client
+const customerContact = {
+    firstName: document.getElementById('customerFirstName'),
+    lastName: document.getElementById('customerLastName'),
+    address: document.getElementById('customerAddress'),
+    city: document.getElementById('customerCity'),
+    email: document.getElementById('customerEmail')
+};
+//données envoyées au serveur
+function sendForm(contact, products) {
+    fetch('http://localhost:3000/api/teddies/order', {
+        method: "POST",
+        body: JSON.stringify({
+            contact: contact,
+            products: products,
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        }
+    })
+        .then(function (res) {
+            return res.json();
+        })
+        .then(function (json) {
+            console.log(json);
+            localStorage.setItem('orderId', json.orderId);
+            localStorage.setItem('orderPrice', totalPrice);
+            window.location = `./confirmpage.html?id=${json.orderId}&name=${customerContact.lastName}&prix=${totalPrice}`;
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+}
+
+const formOrder = document.getElementById('order-form');
+//écoute de l'envoie du formulaire
+formOrder.addEventListener('submit', function (e) {
+    e.preventDefault();
+    sendForm(customerContact, productsId);
+
+    localStorage.removeItem('itemsInCart');
+    //document.location.href = 'confirmpage.html';
+
+    //console.log(json.orderId);
+})
