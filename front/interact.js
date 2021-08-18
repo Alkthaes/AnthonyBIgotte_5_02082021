@@ -1,6 +1,6 @@
 /*pour la fonction d'ajout au panier
 et l'accés aux pages produit*/
-
+import { cart } from './cart'
 //stockage des produits ajoutés au panier dans le localStorage
 let itemsInCart = [];
 //conserver les articles dans le panier même en naviguant entre les pages porduits et la page d'accueil

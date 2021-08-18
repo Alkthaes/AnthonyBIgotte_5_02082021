@@ -1,6 +1,5 @@
 /**Gére les intéractions avec la page produit */
 
-
 let idOfPage = localStorage.getItem('pageId');
 //on enregistre l'objet obtenu par le fetch dans une variable
 const article = {};

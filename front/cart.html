@@ -27,11 +27,18 @@
     <!--Main start-->
     <main class="container">
         <h1 class="text-center">Mon panier</h1>
+        <!--articles-->
         <div class="row">
             <div class="col" id="main-content">
+                <div id="cart-items">
 
+                </div>
+                <div id="total-container" class="mt-3">
+                    <p class="font-weight-bold">Total : <span id="total-price"></span></p>
+                </div>
             </div>
         </div>
+        <!--articles end-->
         <div class="row">
             <div class="col d-flex flex-column align-items-center justify-content-center">
                 <a href="../front/homefolder/index.html" class="btn btn-warning mb-3">Continuer les achats</a>
@@ -39,6 +46,7 @@
                 <p class="h2">Passer commande</p>
             </div>
         </div>
+        <!--contact form-->
         <form action="#" class="my-5" id="order-form">
             <div class="form-row">
                 <div class="form-group col-6">
@@ -67,6 +75,7 @@
             </div>
             <button type="submit" class="btn btn-warning" id="order-button">Commander</button>
         </form>
+        <!--contact form end-->
     </main>
     <!--Main End-->
     <!--Footer start-->
