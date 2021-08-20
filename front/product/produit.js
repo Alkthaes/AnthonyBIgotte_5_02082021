@@ -1,6 +1,6 @@
 /**Gére les intéractions avec la page produit */
-
-let idOfPage = localStorage.getItem('pageId');
+let url = new URLSearchParams(document.location.search.substring(1));
+let idOfPage = url.get('id');
 //on enregistre l'objet obtenu par le fetch dans une variable
 const article = {};
 //div dans laquelle on va placer les éléments créés ici
@@ -64,6 +64,8 @@ function createPage(object) {
     cartBtn.classList.add('btn', 'btn-warning', 'float-right', 'btnAddCart', 'align-self-center');
     cartBtn.id = 'prodPgAddCart';
     cartBtn.textContent = 'Ajouter au panier';
+    cartBtn.setAttribute('data-id', object._id);
+    cartBtn.addEventListener('click', addItem);
     articleContainer.appendChild(cartBtn);
 }
 

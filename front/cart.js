@@ -1,32 +1,5 @@
-//gère la page panier
-document.addEventListener('DOMContentLoaded', () => {
-    //quand la page est prête
-    getProducts();
-    //récupérer les article du localStorade
-    cart.init();
-    //charger les articles du panier
-    showCart();
-});
-//appel de l'api pour obtenir les informations des produits
-const products = [];
-function getProducts() {
-    fetch('http://localhost:3000/api/teddies')
-        .then(function (res) {
-            if (res.ok) {
-                return res.json();
-            }
-        })
-        .then(function (value) {
-            value.forEach((element) => {
-                //on extrait ici chaque objet de la réponse de la requête dans l'array listItems
-                //pour utiliser les données à volonté
-                products.push(element);
-            })
-        })
-        .catch(function (err) {
-            console.log(err)
-        });
-};
+//gère les interractions avec le panier
+
 
 //récupération des articles dans le localStorage
 const cart = {
@@ -84,7 +57,7 @@ const cart = {
         await localStorage.setItem(cart.KEY, _cart); //modifie le localStorage storage en fonction du contenu de cart.contents
     },
     find(id) {
-        //rechercher un article avec son nom
+        //rechercher un article avec son id
         let match = cart.contents.filter(item => {
             if (item._id == id)
                 return true;
@@ -98,7 +71,7 @@ const cart = {
         if (cart.find(id)) {
             cart.increase(id, 1);
         } else {
-            let arr = products.filter(product => {
+            let arr = PRODUCTS.filter(product => {
                 if (product._id == id) {
                     return true;
                 }
@@ -108,7 +81,8 @@ const cart = {
                     _id: arr[0]._id,
                     name: arr[0].name,
                     qty: 1,
-                    price: arr[0].price
+                    price: arr[0].price,
+                    imageUrl: arr[0].imageUrl
                 };
                 cart.contents.push(obj);
                 //mise à jour du localStorage
@@ -142,7 +116,7 @@ const cart = {
     remove(id) {
         //supprime un article du panier en utilisant son id
         cart.contents = cart.contents.filter(item => {
-            if (item.id !== id)
+            if (item._id !== id)
                 return true;
         });
         //mise à jour du localStorage
@@ -150,9 +124,9 @@ const cart = {
     },
     empty() {
         //vide tout le panier
-        CART.contents = [];
+        cart.contents = [];
         //mise à jour du localStorage
-        CART.sync()
+        cart.sync()
     },
     sort(field = 'id') {
         //trier par catégorie ex : nom, prix, id
@@ -169,79 +143,242 @@ const cart = {
         return sorted;
         //pas d'impact sur le localStorage
     },
+};
+
+
+let PRODUCTS = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    //quand la page est prête
+    getProducts(showProducts, erroMessage);
+    //initialiser le panier
+    cart.init();
+    //affiche le panier
+    try {
+        showCart();
+    } catch (err) {
+        console.log(err);
+    }
+})
+//affichage du prix total des articles
+let totalPrice = document.getElementById('total-price');
+//création de la page panier en html
+function showCart() {
+    let cartItems = document.getElementById('cart-items');
+    let total = 0;
+    cartItems.innerHTML = '';
+    let s = cart.sort('qty'); //s comme "sort"
+    s.forEach(element => {
+        let cost = element.qty * (element.price / 100);
+        let cartItem = document.createElement('div');
+        cartItem.classList.add('row', 'bg-secondary', 'mt-3', 'text-white', 'd-flex', 'align-items-center', 'justify-content-between', 'cart-item');
+        //création de la div img
+        let imageContainer = document.createElement('div');
+        imageContainer.classList.add('col-2', 'my-3');
+        cartItem.appendChild(imageContainer);
+        let articleImage = document.createElement('img');
+        articleImage.setAttribute('width', '100');
+        articleImage.setAttribute('height', '100');
+        articleImage.src = element.imageUrl;
+        articleImage.alt = element.name;
+        imageContainer.appendChild(articleImage);
+        //création de la div nom
+        let articleNameContainer = document.createElement('div');
+        articleNameContainer.classList.add('col-2', 'text-center');
+        cartItem.appendChild(articleNameContainer);
+        let articleName = document.createElement('p');
+        articleName.innerText = element.name;
+        articleNameContainer.appendChild(articleName);
+        //création de la div de contrôle de la quantité
+        let controls = document.createElement('div');
+        controls.classList.add('controls', 'col-2', 'text-center');
+        cartItem.appendChild(controls);
+        //bouton moins
+        let minus = document.createElement('span');
+        minus.classList.add('btn', 'btn-warning', 'mr-3');
+        minus.textContent = '-';
+        minus.setAttribute('data-id', element._id)
+        controls.appendChild(minus);
+        minus.addEventListener('click', decrementCart)
+        //quantité
+        let qty = document.createElement('span');
+        qty.textContent = element.qty;
+        controls.appendChild(qty);
+        //bouton plus
+        let plus = document.createElement('span');
+        plus.classList.add('btn', 'btn-warning', 'ml-3');
+        plus.textContent = '+';
+        plus.setAttribute('data-id', element._id)
+        controls.appendChild(plus);
+        plus.addEventListener('click', incrementCart)
+        //prix
+        let priceContainer = document.createElement('div');
+        priceContainer.classList.add('col-2');
+        cartItem.appendChild(priceContainer);
+        let price = document.createElement('p');
+        price.classList.add('article-price');
+        price.innerHTML = cost + '€';
+        priceContainer.appendChild(price);
+        //bouton supprimer
+        let supprBtnCtn = document.createElement('div');
+        supprBtnCtn.classList.add('col-2');
+        cartItem.appendChild(supprBtnCtn);
+        let supprButton = document.createElement('button');
+        supprButton.classList.add('btn', 'btn-danger');
+        supprButton.setAttribute('data-id', element._id);
+        supprButton.innerText = 'Supprimer';
+        supprButton.addEventListener('click', removeItem)
+        supprBtnCtn.appendChild(supprButton);
+
+        cartItems.appendChild(cartItem);
+        total += cost;
+        totalPrice.innerText = total + '€';
+
+    })
+};
+
+//augmenter la quantité d'un article
+function incrementCart(e) {
+    e.preventDefault();
+    let id = e.target.getAttribute('data-id');
+    cart.increase(id, 1);
+    let controls = e.target.parentElement;
+    let qty = controls.querySelector('span:nth-child(2)');
+    let item = cart.find(id);
+    if (item) {
+        qty.textContent = item.qty;
+    } else {
+        document.getElementById('cart').removeChild(controls.parentElement);
+    }
+    showCart();
+};
+//réduire la quantité d'un article
+function decrementCart(e) {
+    e.preventDefault();
+    let id = e.target.getAttribute('data-id');
+    cart.reduce(id, 1);
+    let controls = e.target.parentElement;
+    let qty = controls.querySelector('span:nth-child(2)');
+    let item = cart.find(id);
+    if (item) {
+        qty.textContent = item.qty;
+    } else {
+        document.getElementById('cart').removeChild(controls.parentElement);
+    }
+    showCart();
+};
+//requête pour obtenir les informations produits
+function getProducts(success, failure) {
+    fetch('http://localhost:3000/api/teddies')
+        .then(function (res) {
+            if (res.ok) {
+                return res.json();
+            }
+        })
+        .then(success)
+        .catch(failure);
+};
+
+//création des cartes produit
+function showProducts(products) {
+    try {
+        PRODUCTS = products;
+        products.forEach((element) => {
+            //créaction d'une div.card et d'une div.card-body pour afficher les articles
+            let itemCard = document.createElement('div');
+            itemCard.classList.add('card', 'h-100');
+            itemCard.id = element._id;
+            let itemCardBody = document.createElement('div');
+            itemCardBody.classList.add('card-body');
+            //création d'une div.col pour chaque nouvelle carte créée
+            let cardContainer = document.createElement('div');
+            cardContainer.classList.add('col-12', 'col-lg-4', 'my-3');
+            //extraction des éléments de l'objet js dans des éléments html
+            let itemImage = document.createElement('img');
+            itemImage.src = element.imageUrl;
+            itemImage.height = 225;
+            //création de la div card
+            itemImage.classList.add('card-img-top', 'w-100');
+            let itemName = document.createElement('h3');
+            itemName.textContent = element.name;
+            itemName.classList.add('card-title');
+            let itemPrice = document.createElement('p');
+            itemPrice.textContent = (element.price / 100) + '€';
+            itemPrice.classList.add('text-right');
+            let itemDescription = document.createElement('p');
+            itemDescription.textContent = element.description;
+            itemDescription.classList.add('card-text');
+            //ajout du bouton panier et du lien vers la page produit
+            let linkButtonCtn = document.createElement('div');
+            linkButtonCtn.classList.add('d-flex', 'justify-content-between', 'align-items-center')
+            let addCartBtn = document.createElement('button');
+            addCartBtn.classList.add('btn', 'btn-warning', 'float-right', 'btnAddCart');
+            addCartBtn.textContent = 'Ajouter au panier';
+            addCartBtn.setAttribute('data-id', element._id);
+            addCartBtn.addEventListener('click', addItem);
+            let productLink = document.createElement('a');
+            productLink.classList.add('text-muted', 'linkToProduct');
+            productLink.href = `../product/produit.html?id=${element._id}`;
+            productLink.innerHTML = 'Plus d&#39options';
+            //insertion des éléments dans les divs nouvellement créées
+            itemCard.appendChild(itemImage);
+            itemCardBody.appendChild(itemName);
+            itemCardBody.appendChild(itemDescription);
+            itemCardBody.appendChild(itemPrice);
+            linkButtonCtn.appendChild(productLink);
+            linkButtonCtn.appendChild(addCartBtn);
+            itemCardBody.appendChild(linkButtonCtn);
+            itemCard.appendChild(itemCardBody);
+            cardContainer.appendChild(itemCard);
+            itemsContainer.appendChild(cardContainer);
+        })
+    } catch (err) {
+        console.log(err);
+    }
 }
 
+//ajout d'un article dans le panier
 function addItem(e) {
     e.preventDefault();
     let id = e.target.getAttribute('data-id');
     console.log('article ajouté au panier', id);
     cart.add(id, 1);
-    showCart();
+    alert('Article ajouté au panier');
+    try {
+        showCart();
+    } catch (err) {
+        console.log(err);
+    };
 }
 
-const mainContent = document.getElementById('main-content');
-let totalPrice = document.querySelector('span#total-price');
-let total = 0;
-
-//création de la page panier en html
-function showCart() {
-    let cartItems = document.getElementById('cart-items');
-    cartItems.innerHTML = '';
-    let s = cart.sort('qty'); //s comme "sort"
-    s.forEach(element => {
-        let cartItem = document.createElement('div');
-        let numberArticle = element.qty;
-        let price = (numberArticle * element.price) / 100;
-        total += price;
-        let imgPath = '../images/';
-        cartItem.classList.add('row', 'bg-secondary', 'mt-3', 'text-white', 'd-flex', 'align-items-center', 'justify-content-between', `article-${element.name}`);
-        cartItem.innerHTML =
-            `<div class="col-2">
-            <img src="${imgPath + element.imageUrl}" alt="" width="80" height="80" class="m-3">
-        </div>
-        <div class="col-2 text-center">
-            <p class="itemName">${element.name}</p>
-        </div>
-        <div class="col-2">
-            <label for="number-article" class="sr-only">Quantité</label>
-            <input class="number-article" name="number-article" type="number" min="1" placeholder="${numberArticle}" data-id="${element._id}">
-        </div>
-        <div class="col-2 text-center">
-            <p class="article-price">${price}€</p>
-        </div>
-        <div class="col-2">
-            <button type="button" class="btn btn-danger remove-item" data-id="${element._id}">Supprimer</button>
-        </div>
-        `
-            ;
-        totalPrice.innerHTML = total + '€';
-        const divTotal = document.getElementById('total-container');
-        cartItems.appendChild(cartItem);
-        mainContent.insertBefore(cartItems, divTotal);
-    })
-};
-
-//modification de la quantité d'articles
-
-
 //suprresion d'articles dans le panier
-function removeItem() {
-    let removeButtons = document.getElementsByClassName('remove-item');
-    for (let i = 0; i < removeButtons.length; i++) {
-        removeButtons[i].addEventListener('click', function (e) {
-            e.preventDefault();
-            console.log('clicked');
-            let id = e.target.getAttribute('data-id');
-            cart.remove(id);
-        })
-    }
-};
+function removeItem(e) {
+    e.preventDefault();
+    let id = e.target.getAttribute('data-id');
+    cart.remove(id);
+    e.target.parentElement.parentElement.remove();
+    try {
+        showCart();
+    } catch (err) {
+        console.log(err);
+    };
+}
+
+function erroMessage(err) {
+    //affiche le message d'erreur dans la console
+    console.error(err);
+}
 
 //passer la commande
 //extraire les id produits
 const productsId = [];
 cart.contents.forEach((element) => {
-    productsId.push(element._id);
+    //productsId.push(element._id);
+    //if (element.qty > 1) {
+    for (let i = 1; i <= element.qty; i++) {
+        productsId.push(element._id);
+    }
+    //}
 })
 //extraire les données client
 const customerContact = {
@@ -269,8 +406,8 @@ function sendForm(contact, products) {
         .then(function (json) {
             console.log(json);
             localStorage.setItem('orderId', json.orderId);
-            localStorage.setItem('orderPrice', totalPrice);
-            window.location = `./confirmpage.html?id=${json.orderId}&name=${customerContact.lastName}&prix=${totalPrice}`;
+            localStorage.setItem('orderPrice', totalPrice.innerText);
+            window.location = `./confirmpage.html?id=${json.orderId}&name=${customerContact.lastName}&prix=${totalPrice.innerText}`;
         })
         .catch(function (err) {
             console.log(err);
@@ -279,8 +416,19 @@ function sendForm(contact, products) {
 
 const formOrder = document.getElementById('order-form');
 //écoute de l'envoie du formulaire
-formOrder.addEventListener('submit', function (e) {
-    e.preventDefault();
-    sendForm(customerContact, productsId);
-    localStorage.removeItem('itemsInCart');
-})
+try {
+    formOrder.addEventListener('submit', function (e) {
+        e.preventDefault();
+        //extraire les id produits
+        const productsId = [];
+        cart.contents.forEach((element) => {
+            for (let i = 1; i <= element.qty; i++) {
+                productsId.push(element._id);
+            }
+        })
+        sendForm(customerContact, productsId);
+        cart.empty();
+    })
+} catch (error) {
+    console.log(error);
+}

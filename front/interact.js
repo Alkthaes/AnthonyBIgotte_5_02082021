@@ -38,7 +38,7 @@ try {
         }
         else if (e.target && e.target.matches('button.btnAddCart')) {
             idChecker(e.target, listItems);
-            localStorage.setItem('itemsInCart', JSON.stringify(itemsInCart));
+            localStorage.setItem(cart.KEY, JSON.stringify(itemsInCart));
             location.href = '../cart.html';
         }
     })
