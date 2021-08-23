@@ -2,6 +2,7 @@ const container = document.querySelector('main.container');
 const orderId = localStorage.getItem('orderId');
 const orderPrice = localStorage.getItem('orderPrice');
 const orderSummary = document.createElement('div');
+
 orderSummary.classList.add('row');
 orderSummary.innerHTML =
     `<div class="col col-md-8 bg-white">
@@ -12,4 +13,5 @@ orderSummary.innerHTML =
     </div>
             `
     ;
+
 container.appendChild(orderSummary);
