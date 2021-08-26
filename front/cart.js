@@ -18,7 +18,7 @@ const cart = {
                     "_id": "5be9c8541c9d440000665243",
                     "name": "Norbert",
                     "price": 2900,
-                    "imageUrl": "http://localhost:3000/images/teddy_1.jpg",
+                    "imageUrl": "teddy_1.jpg",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                     "qty": 2
                 },
@@ -31,7 +31,7 @@ const cart = {
                     "_id": "5beaa8bf1c9d440000a57d94",
                     "name": "Arnold",
                     "price": 3900,
-                    "imageUrl": "http://localhost:3000/images/teddy_2.jpg",
+                    "imageUrl": "teddy_2.jpg",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                     "qty": 1
                 },
@@ -44,7 +44,7 @@ const cart = {
                     "_id": "5beaabe91c9d440000a57d96",
                     "name": "Gustav",
                     "price": 4500,
-                    "imageUrl": "http://localhost:3000/images/teddy_4.jpg",
+                    "imageUrl": "teddy_4.jpg",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                     "qty": 1
                 },
@@ -301,7 +301,6 @@ function decrementCart(e) {
 
     let controls = e.target.parentElement;
     let qty = controls.querySelector('span:nth-child(2)');
-    let minus = controls.querySelector('span:nth-child(1)');
     let item = cart.find(id);
 
     if (item) {
@@ -416,7 +415,6 @@ function addItem(e) {
 
     let id = e.target.getAttribute('data-id');
 
-    console.log('article ajouté au panier', id);
     cart.add(id, 1);
 
     let cartAlert = document.getElementById('cartAlert');
